@@ -1,5 +1,5 @@
 module "apigateway_v2" {
-  source = "../../module-api-gateway-rest-api/src"
+  source = "github.com/breno-hof/module-api-gateway-rest-api//src?ref=0.0.2"
 
   aws_region                             = "us-east-1"
   apigateway_v2_name                     = "my-api-gateway"
