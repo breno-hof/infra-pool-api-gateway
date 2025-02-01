@@ -1,0 +1,290 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Pools API",
+        "description": "API for managing pool records",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/pools": {
+            "post": {
+                "operationId": "CreatePool",
+                "summary": "Create a new Pool",
+                "description": "Creates a new pool record",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PoolCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pool created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pool"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-integration": {
+                    "type": "aws_proxy",
+                    "httpMethod": "POST",
+                    "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789012:function:PoolServiceFunction/invocations",
+                    "payloadFormatVersion": "2.0"
+                }
+            },
+            "get": {
+                "operationId": "ListPools",
+                "summary": "List Pools",
+                "description": "Retrieves a list of pools, potentially with pagination",
+                "responses": {
+                    "200": {
+                        "description": "List of pools",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Pool"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "page": {
+                                                    "type": "integer"
+                                                },
+                                                "limit": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-integration": {
+                    "type": "aws_proxy",
+                    "httpMethod": "POST",
+                    "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789012:function:PoolServiceFunction/invocations",
+                    "payloadFormatVersion": "2.0"
+                }
+            }
+        },
+        "/pools/{poolId}": {
+            "parameters": [
+                {
+                    "name": "poolId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "description": "Unique identifier for the pool"
+                }
+            ],
+            "get": {
+                "operationId": "GetPool",
+                "summary": "Get a Pool",
+                "description": "Retrieves a specific pool by its ID",
+                "responses": {
+                    "200": {
+                        "description": "Pool details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pool"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Pool not found"
+                    }
+                },
+                "x-amazon-apigateway-integration": {
+                    "type": "aws_proxy",
+                    "httpMethod": "POST",
+                    "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789012:function:PoolServiceFunction/invocations",
+                    "payloadFormatVersion": "2.0"
+                }
+            },
+            "put": {
+                "operationId": "UpdatePool",
+                "summary": "Update a Pool",
+                "description": "Updates an existing pool's data",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PoolUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pool updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pool"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Pool not found"
+                    }
+                },
+                "x-amazon-apigateway-integration": {
+                    "type": "aws_proxy",
+                    "httpMethod": "POST",
+                    "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789012:function:PoolServiceFunction/invocations",
+                    "payloadFormatVersion": "2.0"
+                }
+            },
+            "delete": {
+                "operationId": "DeletePool",
+                "summary": "Delete a Pool",
+                "description": "Deletes an existing pool by its ID",
+                "responses": {
+                    "204": {
+                        "description": "Pool deleted"
+                    },
+                    "404": {
+                        "description": "Pool not found"
+                    }
+                },
+                "x-amazon-apigateway-integration": {
+                    "type": "aws_proxy",
+                    "httpMethod": "POST",
+                    "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789012:function:PoolServiceFunction/invocations",
+                    "payloadFormatVersion": "2.0"
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Pool": {
+                "type": "object",
+                "properties": {
+                    "pool_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Unique identifier for the pool"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Name or identification of the pool"
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Address or coordinates of the pool"
+                    },
+                    "volume": {
+                        "type": "number",
+                        "format": "float",
+                        "description": "Capacity of the pool in cubic meters"
+                    },
+                    "material": {
+                        "type": "string",
+                        "description": "Construction material of the pool"
+                    },
+                    "heating_type": {
+                        "type": "string",
+                        "description": "Type of heating system used"
+                    },
+                    "maintenance_frequency": {
+                        "type": "string",
+                        "description": "Recommended maintenance frequency"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "General observations about the pool"
+                    }
+                },
+                "required": [
+                    "pool_id",
+                    "name"
+                ]
+            },
+            "PoolCreateRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "volume": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "material": {
+                        "type": "string"
+                    },
+                    "heating_type": {
+                        "type": "string"
+                    },
+                    "maintenance_frequency": {
+                        "type": "string"
+                    },
+                    "notes": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "PoolUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "volume": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "material": {
+                        "type": "string"
+                    },
+                    "heating_type": {
+                        "type": "string"
+                    },
+                    "maintenance_frequency": {
+                        "type": "string"
+                    },
+                    "notes": {
+                        "type": "string"
+                    }
+                },
+                "description": "All fields are optional if using PATCH semantics. If using PUT, define which fields are required."
+            }
+        }
+    }
+}
