@@ -1,6 +1,6 @@
 locals {
 	name				= "pool-monitoring"
-	openapi_file_path	= "${module.path}/openapi.json"
+	openapi_file_path	= "${path.module}/openapi.json"
 
 	tags				= {
 		Application		= local.name,
