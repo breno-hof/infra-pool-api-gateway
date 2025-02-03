@@ -2,7 +2,7 @@
     "openapi": "3.0.1",
     "info": {
         "title": "Pools API",
-        "description": "API for managing pool records",
+        "description": "API for managing pool records (Mock Integration)",
         "version": "1.0.0"
     },
     "paths": {
@@ -10,7 +10,7 @@
             "post": {
                 "operationId": "CreatePool",
                 "summary": "Create a new Pool",
-                "description": "Creates a new pool record",
+                "description": "Creates a new pool record (mock response).",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -34,16 +34,22 @@
                     }
                 },
                 "x-amazon-apigateway-integration": {
-                    "type": "aws_proxy",
-                    "httpMethod": "POST",
-                    "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789012:function:PoolServiceFunction/invocations",
-                    "payloadFormatVersion": "2.0"
+                    "type": "mock",
+                    "payloadFormatVersion": "2.0",
+                    "responses": {
+                        "default": {
+                            "statusCode": "201",
+                            "responseTemplates": {
+                                "application/json": "{\"pool_id\": \"123e4567-e89b-12d3-a456-426614174000\", \"name\": \"Main Pool (Mock)\", \"location\": \"123 ABC Street\", \"volume\": 75.0, \"material\": \"Fiberglass\", \"heating_type\": \"Solar\", \"maintenance_frequency\": \"Monthly\", \"notes\": \"Static mock response\"}"
+                            }
+                        }
+                    }
                 }
             },
             "get": {
                 "operationId": "ListPools",
                 "summary": "List Pools",
-                "description": "Retrieves a list of pools, potentially with pagination",
+                "description": "Retrieves a list of pools (mock response).",
                 "responses": {
                     "200": {
                         "description": "List of pools",
@@ -79,10 +85,16 @@
                     }
                 },
                 "x-amazon-apigateway-integration": {
-                    "type": "aws_proxy",
-                    "httpMethod": "POST",
-                    "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789012:function:PoolServiceFunction/invocations",
-                    "payloadFormatVersion": "2.0"
+                    "type": "mock",
+                    "payloadFormatVersion": "2.0",
+                    "responses": {
+                        "default": {
+                            "statusCode": "200",
+                            "responseTemplates": {
+                                "application/json": "{data\": [{\"pool_id\": \"mock-uuid-1\", \"name\":\"Main Pool (Mock)\", \"location\":\"123 ABC Street\"}, {\"pool_id\": \"mock-uuid-2\", \"name\":\"Kids Pool (Mock)\", \"location\":\"456 XYZ Avenue\"} ], \"meta\":{\"page\":1,\"limit\":10,\"total\":2}}"
+                            }
+                        }
+                    }
                 }
             }
         },
@@ -102,7 +114,7 @@
             "get": {
                 "operationId": "GetPool",
                 "summary": "Get a Pool",
-                "description": "Retrieves a specific pool by its ID",
+                "description": "Retrieves a specific pool by its ID (mock response).",
                 "responses": {
                     "200": {
                         "description": "Pool details",
@@ -119,16 +131,22 @@
                     }
                 },
                 "x-amazon-apigateway-integration": {
-                    "type": "aws_proxy",
-                    "httpMethod": "POST",
-                    "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789012:function:PoolServiceFunction/invocations",
-                    "payloadFormatVersion": "2.0"
+                    "type": "mock",
+                    "payloadFormatVersion": "2.0",
+                    "responses": {
+                        "default": {
+                            "statusCode": "200",
+                            "responseTemplates": {
+                                "application/json": "{\"pool_id\":\"{{path.poolId}}\",\"name\":\"Mocked Pool\",\"location\":\"Mock Location\",\"volume\":50.0}"
+                            }
+                        }
+                    }
                 }
             },
             "put": {
                 "operationId": "UpdatePool",
                 "summary": "Update a Pool",
-                "description": "Updates an existing pool's data",
+                "description": "Updates an existing pool's data (mock response).",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -155,16 +173,22 @@
                     }
                 },
                 "x-amazon-apigateway-integration": {
-                    "type": "aws_proxy",
-                    "httpMethod": "POST",
-                    "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789012:function:PoolServiceFunction/invocations",
-                    "payloadFormatVersion": "2.0"
+                    "type": "mock",
+                    "payloadFormatVersion": "2.0",
+                    "responses": {
+                        "default": {
+                            "statusCode": "200",
+                            "responseTemplates": {
+                                "application/json": "{\"pool_id\":\"{{path.poolId}}\",\"name\":\"Updated Mock Pool\",\"notes\":\"Mock update successful\"}"
+                            }
+                        }
+                    }
                 }
             },
             "delete": {
                 "operationId": "DeletePool",
                 "summary": "Delete a Pool",
-                "description": "Deletes an existing pool by its ID",
+                "description": "Deletes an existing pool by its ID (mock response).",
                 "responses": {
                     "204": {
                         "description": "Pool deleted"
@@ -174,10 +198,13 @@
                     }
                 },
                 "x-amazon-apigateway-integration": {
-                    "type": "aws_proxy",
-                    "httpMethod": "POST",
-                    "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789012:function:PoolServiceFunction/invocations",
-                    "payloadFormatVersion": "2.0"
+                    "type": "mock",
+                    "payloadFormatVersion": "2.0",
+                    "responses": {
+                        "default": {
+                            "statusCode": "204"
+                        }
+                    }
                 }
             }
         }
@@ -282,8 +309,7 @@
                     "notes": {
                         "type": "string"
                     }
-                },
-                "description": "All fields are optional if using PATCH semantics. If using PUT, define which fields are required."
+                }
             }
         }
     }
