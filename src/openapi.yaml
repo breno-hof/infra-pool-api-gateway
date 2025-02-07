@@ -5,6 +5,39 @@ info:
   version: 1.0.0
 paths:
   /pools:
+    get:
+      operationId: ListPools
+      summary: List Pools
+      description: Retrieves a list of pools (mock response).
+      responses:
+        '200':
+          description: List of pools
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Pool'
+                  meta:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      limit:
+                        type: integer
+                      total:
+                        type: integer
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: GET
+        uri: arn:aws:lambda:us-east-1:000000000000:function:pool-read
+        payloadFormatVersion: '2.0'
+        responses:
+          default:
+            statusCode: '200'
     post:
       operationId: CreatePool
       summary: Create a new Pool
@@ -25,12 +58,60 @@ paths:
       x-amazon-apigateway-integration:
         type: aws_proxy
         httpMethod: POST
-        uri: arn:aws:lambda:us-east-1:000000000000:function:pool-registry
+        uri: arn:aws:lambda:us-east-1:000000000000:function:pool-write
         payloadFormatVersion: '2.0'
         responses:
           default:
             statusCode: '201'
   /pools/{id}:
+    get:
+      operationId: GetPool
+      summary: Get a Pool
+      description: Retrieves a specific pool by its ID (mock response).
+      responses:
+        '200':
+          description: Pool details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pool'
+        '404':
+          description: Pool not found
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: GET
+        uri: arn:aws:lambda:us-east-1:000000000000:function:pool-read
+        payloadFormatVersion: '2.0'
+        responses:
+          default:
+            statusCode: '200'
+    put:
+      operationId: UpdatePool
+      summary: Update a Pool
+      description: Updates an existing pool's data (mock response).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PoolUpdateRequest'
+      responses:
+        '200':
+          description: Pool updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pool'
+        '404':
+          description: Pool not found
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: PUT
+        uri: arn:aws:lambda:us-east-1:000000000000:function:pool-write
+        payloadFormatVersion: '2.0'
+        responses:
+          default:
+            statusCode: '200'
     delete:
       operationId: DeletePool
       summary: Delete a Pool
@@ -44,8 +125,8 @@ paths:
           description: Pool not found
       x-amazon-apigateway-integration:
         type: aws_proxy
-        httpMethod: POST
-        uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000000:function:pool-registry/invocations
+        httpMethod: DELETE
+        uri: arn:aws:lambda:us-east-1:000000000000:function:pool-write
         payloadFormatVersion: '2.0'
         responses:
           default:
