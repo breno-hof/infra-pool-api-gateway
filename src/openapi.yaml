@@ -1,22 +1,124 @@
-openapi: "3.0.1"
+openapi: 3.0.1
 info:
-  version: 0.0.1
-  description: My awesome API
+  title: Pools API
+  description: API for managing pool records
+  version: 1.0.0
 paths:
-  /debug:
-    get:
-      operationId: getDebug
+  /pools:
+    post:
+      operationId: CreatePool
+      summary: Create a new Pool
+      description: Creates a new pool record.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PoolCreateRequest'
       responses:
-        default:
-          description: "Default response for GET /debug"
+        '201':
+          description: Pool created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pool'
       x-amazon-apigateway-integration:
-        $ref: '#/components/x-amazon-apigateway-integrations/debug'
-
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:lambda:us-east-1:000000000000:function:pool-registry
+        payloadFormatVersion: '2.0'
+        responses:
+          default:
+            statusCode: '201'
+  /pools/{id}:
+    delete:
+      operationId: DeletePool
+      summary: Delete a Pool
+      description: Deletes an existing pool by its ID.
+      security:
+        - CognitoAuthorizer: []
+      responses:
+        '204':
+          description: Pool deleted
+        '404':
+          description: Pool not found
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000000:function:pool-registry/invocations
+        payloadFormatVersion: '2.0'
+        responses:
+          default:
+            statusCode: '204'
 components:
-  x-amazon-apigateway-integrations:
-    debug:
-      type: AWS_PROXY
-      httpMethod: GET
-      uri: "arn:aws:lambda:us-east-1:000000000000:function:pool-registry"
-      payloadFormatVersion: "2.0"
-      connectionType: INTERNET
+  schemas:
+    Pool:
+      type: object
+      properties:
+        pool_id:
+          type: string
+          format: uuid
+          description: Unique identifier for the pool
+        name:
+          type: string
+          description: Name or identification of the pool
+        location:
+          type: string
+          description: Address or coordinates of the pool
+        volume:
+          type: number
+          format: float
+          description: Capacity of the pool in cubic meters
+        material:
+          type: string
+          description: Construction material of the pool
+        heating_type:
+          type: string
+          description: Type of heating system used
+        maintenance_frequency:
+          type: string
+          description: Recommended maintenance frequency
+        notes:
+          type: string
+          description: General observations about the pool
+      required:
+        - pool_id
+        - name
+    PoolCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        location:
+          type: string
+        volume:
+          type: number
+          format: float
+        material:
+          type: string
+        heating_type:
+          type: string
+        maintenance_frequency:
+          type: string
+        notes:
+          type: string
+      required:
+        - name
+    PoolUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        location:
+          type: string
+        volume:
+          type: number
+          format: float
+        material:
+          type: string
+        heating_type:
+          type: string
+        maintenance_frequency:
+          type: string
+        notes:
+          type: string
