@@ -116,8 +116,6 @@ paths:
       operationId: DeletePool
       summary: Delete a Pool
       description: Deletes an existing pool by its ID.
-      security:
-        - CognitoAuthorizer: []
       responses:
         '204':
           description: Pool deleted
@@ -180,8 +178,6 @@ components:
         heating_type:
           type: string
         maintenance_frequency:
-          type: string
-        notes:
           type: string
       required:
         - name
